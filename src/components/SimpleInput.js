@@ -6,7 +6,8 @@ const SimpleInput = (props) => {
     isInputValid: isNameInputValid,
     onChangeHandler: onNameChangeHandler,
     onInputBlur: onNameInputBlur,
-    setInputValue: setNameInputValue,
+    hasError: hasNameError,
+    reset: resetNameInput,
   } = useInput((value) => value.trim() !== "");
 
   const {
@@ -14,7 +15,8 @@ const SimpleInput = (props) => {
     isInputValid: isEmailInputValid,
     onChangeHandler: onEmailChangeHandler,
     onInputBlur: onEmailInputBlur,
-    setInputValue: setEmailInputValue,
+    reset: resetEmailInput,
+    hasError: hasEmailError,
   } = useInput((value) => value.includes("@"));
 
   let isFormValid = false;
@@ -28,13 +30,13 @@ const SimpleInput = (props) => {
     if (!isFormValid) {
       return;
     }
-    setNameInputValue("");
-    setEmailInputValue("");
+    resetNameInput();
+    resetEmailInput();
   };
 
   return (
     <form onSubmit={onFormSubmit}>
-      <div className="form-control">
+      <div className={["form-control", hasNameError && "invalid"].join(" ")}>
         <label htmlFor="name">Your Name</label>
         <input
           type="text"
@@ -43,12 +45,10 @@ const SimpleInput = (props) => {
           value={nameInput}
           onChange={onNameChangeHandler}
         />
-        {isNameInputValid === false && (
-          <p className="error-text">Please enter valid input</p>
-        )}
+        {hasNameError && <p className="error-text">Please enter valid input</p>}
       </div>
 
-      <div className="form-control">
+      <div className={["form-control", hasEmailError && "invalid"].join(" ")}>
         <label htmlFor="email">Your Email</label>
         <input
           type="email"
@@ -57,7 +57,7 @@ const SimpleInput = (props) => {
           value={emailInput}
           onChange={onEmailChangeHandler}
         />
-        {isEmailInputValid === false && (
+        {hasEmailError && (
           <p className="error-text">Please enter valid Email</p>
         )}
       </div>
